@@ -81,8 +81,8 @@ def check_table_exists(cursor, conn, table, schema):
     if debug:
         print('Check for table exists: %s' % table)
 
-    stmt = "SELECT EXISTS (SELECT 1 FROM   information_schema.tables WHERE  table_schema = '%s' AND table_name = '%s');" % (schema, table)
-    cursor.execute(stmt)
+    stmt = "SELECT EXISTS (SELECT 1 FROM   information_schema.tables WHERE  table_schema = ? AND table_name = ?);"
+    cursor.execute(stmt, (schema, table, ))
 
     s = cursor.fetchone()
     s = ' '.join(map(str, s))
@@ -233,8 +233,6 @@ def main():
     partition_column = config.get('cluster', 'partition_key', fallback=None)
     sort_keys = config.get('cluster', 'sort_keys', fallback=None)
     column_list = config.get('cluster', 'column_list', fallback='All')
-    debug = config.getboolean('cluster', 'debug', fallback=False)
-    execute = config.getboolean('cluster', 'execute', fallback=False)
 
     s3path = config.get('s3', 'path', fallback=None)
 
